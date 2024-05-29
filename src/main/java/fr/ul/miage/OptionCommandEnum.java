@@ -11,8 +11,8 @@ public enum OptionCommandEnum {
 
     /* Liste des commandes */
 
-    QUIT_APPLICATION(0, "Quit application","terminate application", false),
-    CONNECT_USER(1, "Connect user", "connect user", false);
+    QUITTER_APPLICATION(0, "Quitter l'application","Ferme l'application et sauvegarde les données", false),
+    CONNECTION_UTILISATEUR(1, "Se connecter", "Permet de s'identifier", false);
 
     /**
      * Attributs de l'énumération
@@ -82,8 +82,8 @@ public enum OptionCommandEnum {
      */
     public static String displayMenuConnexion() {
         List<OptionCommandEnum> commands = new ArrayList<>();
-        commands.add(QUIT_APPLICATION);
-        commands.add(CONNECT_USER);
+        commands.add(QUITTER_APPLICATION);
+        commands.add(CONNECTION_UTILISATEUR);
         return displayMenu(commands);
     }
 
