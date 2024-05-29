@@ -18,6 +18,11 @@ public class ConsoleApp {
     private final Scanner scanner = new Scanner(System.in);
 
     /**
+     * Modèle de l'application.
+     */
+    private final Modele modele = new Modele();
+
+    /**
      * Exécute l'application.
      * @throws Exception
      */
@@ -68,15 +73,12 @@ public class ConsoleApp {
      */
     private boolean processCommand(int command) {
         switch (OptionCommandEnum.searchCommand(command)) {
-            case QUIT_APPLICATION -> {
+            case QUITTER_APPLICATION -> {
                 return false;
             }
-            case CONNECT_USER -> {
-                connectUser();
-            }
-            case null, default -> {
-                System.out.println("Commande non reconnue. Tapez 'help' pour la liste des commandes disponibles.");
-            }
+            case CONNECTION_UTILISATEUR -> connectUser();
+            case AFFICHAGE_BORNES -> System.out.println(modele.getParc().afficherListeBornes());
+            default -> System.out.println("Commande non reconnue. Tapez 'help' pour la liste des commandes disponibles.");
         }
         return true;
     }
