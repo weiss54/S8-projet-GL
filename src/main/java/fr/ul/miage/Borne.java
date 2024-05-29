@@ -12,7 +12,7 @@ public class Borne {
 
     @Override
     public String toString() {
-        return "[" + numero + "] " + etat;
+        return "- Borne " + numero + ": " + etat;
     }
 
     public void setEtat(EtatBorne etat) {
