@@ -12,7 +12,8 @@ public enum OptionCommandEnum {
     /* Liste des commandes */
 
     QUITTER_APPLICATION(0, "Quitter l'application","Ferme l'application et sauvegarde les données", false),
-    CONNECTION_UTILISATEUR(1, "Se connecter", "Permet de s'identifier", false);
+    CONNECTION_UTILISATEUR(1, "Se connecter", "Permet de s'identifier", false),
+    AFFICHAGE_BORNES(2, "Afficher bornes", "Affiche la liste des bornes de recharge", true);
 
     /**
      * Attributs de l'énumération
