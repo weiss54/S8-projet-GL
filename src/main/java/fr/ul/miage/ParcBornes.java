@@ -9,6 +9,7 @@ public class ParcBornes {
 
     public ParcBornes() {
         this.bornes = new ArrayList<>();
+        //TODO: il faudra récupérer les bornes existantes dans la base de données
     }
 
     public boolean ajouterBorne(Borne borne) {
@@ -19,6 +20,15 @@ public class ParcBornes {
         }
         bornes.add(borne);
         return true;
+    }
+
+    public String afficherListeBornes() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Liste des bornes :\n");
+        for (Borne borne : bornes) {
+            sb.append(borne).append("\n");
+        }
+        return sb.toString();
     }
 
     public List<Borne> getBornes() {
