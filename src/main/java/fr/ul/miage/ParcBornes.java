@@ -35,4 +35,13 @@ public class ParcBornes {
         return bornes;
     }
 
+    public Borne getBorne(int numero) {
+        for (Borne b : bornes) {
+            if (b.getNumero() == numero) {
+                return b;
+            }
+        }
+        return null;
+    }
+
 }
