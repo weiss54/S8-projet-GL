@@ -145,19 +145,13 @@ public class ConsoleApp {
             return;
         }
         System.out.println(borne);
-        System.out.print("Nouvel état de la borne? ");
+        System.out.println("Nouvel état de la borne?");
         System.out.println("1. DISPONIBLE");
         System.out.println("2. INDISPONIBLE");
         System.out.println("Votre choix: ");
         if (scanner.hasNextInt()) {
             int choix = scanner.nextInt();
-            if (choix == 1 || choix == 2) {
-                borne.setEtat(choix == 1 ? EtatBorne.DISPONIBLE : EtatBorne.INDISPONIBLE);
-                System.out.println("Borne modifiée avec succès.");
-            }
-        } else {
-            System.out.println("Valeur inconnue.");
-            scanner.nextLine();
+            modele.getParc().modifierBorne(numBorne, choix);
         }
     }
 
