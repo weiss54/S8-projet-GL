@@ -2,6 +2,7 @@ package fr.ul.miage.service;
 
 import fr.ul.miage.Borne;
 import fr.ul.miage.DatabaseConnection;
+import fr.ul.miage.EtatBorne;
 import fr.ul.miage.dto.BorneDTO;
 import fr.ul.miage.mapper.BorneMapper;
 
@@ -36,7 +37,7 @@ public class BorneService {
 
     public List<BorneDTO> getAllBornes() throws SQLException {
         List<BorneDTO> borneDTOList = new ArrayList<>();
-        String query = "SELECT * FROM borne";
+        String query = "SELECT * FROM borne ORDER BY numero";
         try (PreparedStatement stmt = connection.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
