@@ -1,10 +1,9 @@
 package fr.ul.miage;
 
 import java.sql.Time;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -13,14 +12,15 @@ import java.util.Date;
  */
 public class Reservation {
     private static final int NB_MAX_PROLONGATION = 3;
-    private Date date;
-    private Time heure_debut, heure_fin, heure_arrivee, heure_depart;
+    private LocalDate date;
+    private LocalTime heure_debut, heure_fin, heure_arrivee, heure_depart;
     private int prolongee, num_reservation;
     private EtatReservation etat;
     private TypeReservation type;
     //TODO ajout Borne, Vehicule, Client (pas oublier le constructeur)
 
-    public Reservation(Date date, Time heure_debut, Time heure_fin){
+    public Reservation(){}
+    public Reservation(LocalDate date, LocalTime heure_debut, LocalTime heure_fin){
         this.etat = EtatReservation.CREE;
         this.date = date;
         this.heure_debut = heure_debut;
@@ -29,8 +29,13 @@ public class Reservation {
         this.heure_depart = null;
         this.prolongee = 0;
     }
+    public void creerReservation (){
+        if (estReservationCoherente(this.date, this.heure_debut, this.heure_fin)){
+            //TODO ajout nouvelle réservation dans bdd
+        } else throw new IllegalStateException("Votre demande n'est pas cohérente.");
+    }
 
-    public void modifierReservation(Time heure_debut, Time heure_fin){
+    public void modifierReservation(LocalTime heure_debut, LocalTime heure_fin){
         if (this.etat.equals(EtatReservation.CONFIRMEE)){
             this.heure_debut = heure_debut;
             this.heure_fin = heure_fin;
@@ -38,47 +43,76 @@ public class Reservation {
             throw new IllegalStateException("La réservation ne peut être modifiée que si elle est confirmée.");
         }
     }
-    public void prolongerReservation(Duration duree){
-        boolean peutProlonger = Duration.between(this.heure_fin.toInstant(), Instant.now()).toMinutes()<=15;
-        if (this.prolongee<NB_MAX_PROLONGATION && peutProlonger){
-            this.prolongee++;
-        } else {
-            throw new IllegalStateException("La réservation ne peut être prolongée.");
+    //TODO vérifier le booléen peutProlonger, je crois qu'il ne marche pas dans tous les cas
+    public void prolongerReservation(LocalTime duree){
+        if(this.etat.equals(EtatReservation.EN_COURS)){
+            boolean peutProlonger = (LocalTime.now().isBefore(this.heure_fin)) &&
+                    ((ChronoUnit.MINUTES.between(LocalTime.now(),this.heure_fin) <= 15) &&
+                            (ChronoUnit.MINUTES.between(LocalTime.now(),this.heure_fin) >= 0));
+            System.out.println(ChronoUnit.MINUTES.between(this.heure_fin, LocalTime.now()));
+            if (this.prolongee<NB_MAX_PROLONGATION && peutProlonger){
+                this.prolongee++;
+                this.heure_fin=this.heure_fin.plusHours(duree.getHour());
+                this.heure_fin=this.heure_fin.plusMinutes(duree.getMinute());
+                this.heure_fin=this.heure_fin.plusSeconds(duree.getSecond());
+            } else {
+                throw new IllegalStateException("La réservation ne peut être prolongée.");
+            }
+        }else throw new IllegalStateException("La réservation doit être une réservation en cours.");
+    }
+
+    public boolean estReservationCoherente (LocalDate dateReservation, LocalTime debut, LocalTime fin ){
+
+        switch (dateReservation.compareTo(LocalDate.now())){
+            // après
+            case 1:
+                System.out.println("après aujourd'hui");
+                return (debut.isBefore(fin));
+            // avant
+            case -1:
+                System.out.println("avant aujourd'hui");
+                return false;
+            // aujourd'hui
+            case 0:
+                System.out.println("aujourd'hui");
+                return (debut.isBefore(fin)&& debut.isAfter(LocalTime.now()));
+            default:
+                return false;
         }
     }
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public Date getHeure_debut() {
+    public LocalTime getHeure_debut() {
         return heure_debut;
     }
 
-    public void setHeure_debut(Time heure_debut) {
+    public void setHeure_debut(LocalTime heure_debut) {
         this.heure_debut = heure_debut;
     }
 
-    public Date getHeure_fin() {
+    public LocalTime getHeure_fin() {
         return heure_fin;
     }
 
-    public void setHeure_fin(Time heure_fin) {
+    public void setHeure_fin(LocalTime heure_fin) {
         this.heure_fin = heure_fin;
     }
 
-    public Date getHeure_arrivee() {
+    public LocalTime getHeure_arrivee() {
         return heure_arrivee;
     }
 
-    public void setHeure_arrivee(Time heure_arrivee) {
+    public void setHeure_arrivee(LocalTime heure_arrivee) {
         this.heure_arrivee = heure_arrivee;
     }
 
-    public Date getHeure_depart() {
+    public LocalTime getHeure_depart() {
         return heure_depart;
     }
 
-    public void setHeure_depart(Time heure_depart) {
+    public void setHeure_depart(LocalTime heure_depart) {
         this.heure_depart = heure_depart;
     }
 
