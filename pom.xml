@@ -20,9 +20,6 @@
             <version>RELEASE</version>
             <scope>test</scope>
         </dependency>
-    </dependencies>
-
-    <dependencies>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
