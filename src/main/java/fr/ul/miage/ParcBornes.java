@@ -1,42 +1,64 @@
 package fr.ul.miage;
 
+import fr.ul.miage.dto.BorneDTO;
+import fr.ul.miage.mapper.BorneMapper;
+import fr.ul.miage.service.BorneService;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ParcBornes {
 
-    private List<Borne> bornes;
+    private final BorneService borneService = new BorneService();
 
     public ParcBornes() {
-        this.bornes = new ArrayList<>();
-        //TODO: il faudra récupérer les bornes existantes dans la base de données
     }
 
     public boolean ajouterBorne(Borne borne) {
-        for (Borne b : bornes) {
+        for (Borne b : getBornes()) {
             if (b.getNumero() == borne.getNumero()) {
                 return false;
             }
         }
-        bornes.add(borne);
+        try {
+            borneService.createBorne(BorneMapper.toDTO(borne));
+        } catch (SQLException e) {
+            return false;
+        }
         return true;
     }
 
     public String afficherListeBornes() {
         StringBuilder sb = new StringBuilder();
         sb.append("Liste des bornes :\n");
-        for (Borne borne : bornes) {
-            sb.append(borne).append("\n");
+        List<Borne> bornes = getBornes();
+        if (bornes.isEmpty()) {
+            sb.append("Aucune borne\n");
+        } else {
+            for (Borne b : bornes) {
+                sb.append(b).append("\n");
+            }
         }
         return sb.toString();
     }
 
+
     public List<Borne> getBornes() {
-        return bornes;
+        try {
+            List<BorneDTO> bornes = borneService.getAllBornes();
+            List<Borne> listeBornes = new ArrayList<>();
+            for (BorneDTO borne : bornes) {
+                listeBornes.add(BorneMapper.toEntity(borne));
+            }
+            return listeBornes;
+        } catch (SQLException e) {
+            return new ArrayList<>();
+        }
     }
 
     public Borne getBorne(int numero) {
-        for (Borne b : bornes) {
+        for (Borne b : getBornes()) {
             if (b.getNumero() == numero) {
                 return b;
             }
@@ -44,4 +66,18 @@ public class ParcBornes {
         return null;
     }
 
+    public String modifierBorne(int numBorne, int choix) {
+        Borne borne = getBorne(numBorne);
+        if (borne != null && (borne.getEtat() == EtatBorne.INDISPONIBLE || borne.getEtat() == EtatBorne.DISPONIBLE)){
+            borne.setEtat(choix == 1 ? EtatBorne.DISPONIBLE : EtatBorne.INDISPONIBLE);
+            try {
+                borneService.updateBorne(BorneMapper.toDTO(borne));
+                return "Borne modifiée avec succès.";
+            } catch (SQLException e) {
+                return "Impossible de modifier la borne.";
+            }
+        } else {
+            return "Impossible de modifier cette borne. Elle est actuellement en état: " + borne.getEtat();
+        }
+    }
 }
