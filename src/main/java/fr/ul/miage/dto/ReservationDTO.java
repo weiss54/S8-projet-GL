@@ -26,9 +26,11 @@ public class ReservationDTO {
      * @param id_borne
      * @param immatriculation_voiture
      */
-    public ReservationDTO(int num_reservation, LocalDate date, LocalTime heure_debut, LocalTime heure_fin, LocalTime heure_arrivee, LocalTime heure_depart, int prolongee, int id_client, int id_borne, String immatriculation_voiture) {
+    public ReservationDTO(int num_reservation, LocalDate date, LocalTime heure_debut, LocalTime heure_fin,
+                       LocalTime heure_arrivee, LocalTime heure_depart, int prolongee,
+                       int id_client, int id_borne, String immatriculation_voiture,
+                       EtatReservation etat, TypeReservation type) {
         this.num_reservation = num_reservation;
-        this.etat = EtatReservation.CREE;
         this.date = date;
         this.heure_debut = heure_debut;
         this.heure_fin = heure_fin;
@@ -38,8 +40,9 @@ public class ReservationDTO {
         this.id_client = id_client;
         this.id_borne = id_borne;
         this.immatriculation_voiture = immatriculation_voiture;
+        this.etat = etat;
+        this.type = type;
     }
-
     public LocalDate getDate() {
         return date;
     }
