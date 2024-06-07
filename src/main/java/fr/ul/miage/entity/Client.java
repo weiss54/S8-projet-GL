@@ -10,8 +10,8 @@ public class Client {
     private final String numeroCb;
     private final boolean estAdmin;
 
-    public Client(String id, String nom, String prenom, String adresse, String email, String numeroMobile, String numeroCb, boolean estAdmin) {
-        this.id = Long.parseLong(id);
+    public Client(long id, String nom, String prenom, String adresse, String email, String numeroMobile, String numeroCb, boolean estAdmin) {
+        this.id = id;
         this.nom = nom;
         this.prenom = prenom;
         this.adresse = adresse;
