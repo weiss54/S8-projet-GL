@@ -1,9 +1,8 @@
 package fr.ul.miage.service;
 
-import fr.ul.miage.DatabaseConnection;
 import fr.ul.miage.dto.ClientDTO;
-import fr.ul.miage.entity.Client;
 import fr.ul.miage.exception.IdentifiantsIncorrectsException;
+import fr.ul.miage.entity.Client;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,17 +19,37 @@ public class ClientService{
         this.connection = getConnection();
     }
 
-    public void inscrireClient(Client client) throws SQLException {
-        String query = "INSERT INTO client (nom, prenom, adresse, email, numero_mobile, numero_cb, id_identification) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, client.getNom());
-            statement.setString(2, client.getPrenom());
-            statement.setString(3, client.getAdresse());
-            statement.setString(4, client.getEmail());
-            statement.setString(5, client.getNumeroMobile());
-            statement.setString(6, client.getNumeroCb());
-            //statement.setInt(7, client.getIdentification());
-            statement.executeUpdate();
+    public void inscrireClient(String identifiant, String mdp, String nom, String prenom, String adresse,
+    String email, String numeroMobile, String numeroCb) throws SQLException {
+        if (identifiantExisteDeja(identifiant)) {
+            throw new SQLException("L'identifiant existe déjà.");
+        }else {
+            String query = "INSERT INTO identification(identifiant, mot_de_passe, sel, admin) VALUES(?, ?, ?, false)";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, identifiant);
+                statement.setString(2, mdp);
+                statement.setString(3, "sel");
+                statement.executeUpdate();
+            }
+            query = "SELECT id_identification FROM identification WHERE identifiant = ?";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, identifiant);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    resultSet.next();
+                    long idIdentification = resultSet.getLong("id_identification");
+                    query = "INSERT INTO client(nom, prenom, adresse, email, numero_mobile, numero_cb, id_identification) VALUES(?, ?, ?, ?, ?, ?, ?)";
+                    try (PreparedStatement statement2 = connection.prepareStatement(query)) {
+                        statement2.setString(1, nom);
+                        statement2.setString(2, prenom);
+                        statement2.setString(3, adresse);
+                        statement2.setString(4, email);
+                        statement2.setString(5, numeroMobile);
+                        statement2.setString(6, numeroCb);
+                        statement2.setLong(7, idIdentification);
+                        statement2.executeUpdate();
+                    }
+                }
+            }
         }
     }
 
@@ -56,6 +75,17 @@ public class ClientService{
                 } else {
                     throw new IdentifiantsIncorrectsException("Identifiants incorrects.");
                 }
+            }
+        }
+    }
+
+    private boolean identifiantExisteDeja(String identifiant) throws SQLException {
+        String query = "SELECT COUNT(*) FROM identification WHERE identifiant = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, identifiant);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                resultSet.next();
+                return resultSet.getInt(1) > 0;
             }
         }
     }
