@@ -1,11 +1,20 @@
 package fr.ul.miage;
 
+/**
+ * Classe contenant tous les tarifs de l'application
+ */
 public class Tarif {
     private int id_tarif;
     private double tarif_base, tarif_prolongation, tarif_depassement, tarif_electricite, tarif_remboursement;
 
     /**
-     * Classe contenant tous les tarifs de l'application
+     * Constructeur de la classe Tarif
+     * @param id_tarif
+     * @param tarif_base
+     * @param tarif_prolongation
+     * @param tarif_depassement
+     * @param tarif_electricite
+     * @param tarif_remboursement
      */
     public Tarif(int id_tarif, double tarif_base, double tarif_prolongation, double tarif_depassement, double tarif_electricite, double tarif_remboursement){
         this.id_tarif = id_tarif;
@@ -21,11 +30,11 @@ public class Tarif {
      */
     public Tarif(){
         //tarifs à l'heure
-        setTarif_base(5.0);
-        setTarif_prolongation(6.0);
-        setTarif_depassement(15.0);
-        setTarif_electricite(0.30*22);
-        setTarif_remboursement(-2.0);
+        this.tarif_base =5.0;
+        this.tarif_prolongation = 6.0;
+        this.tarif_depassement = 15.0;
+        this.tarif_electricite = 0.30*22;
+        this.tarif_remboursement = -2.0;
     }
 
     public double getTarif_base() {
