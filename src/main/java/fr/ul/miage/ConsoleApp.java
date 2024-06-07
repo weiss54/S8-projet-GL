@@ -7,6 +7,8 @@ import fr.ul.miage.service.ClientService;
 
 import java.util.Scanner;
 
+import static fr.ul.miage.DatabaseConnection.getConnection;
+
 /**
  * Classe qui affiche un menu console pour l'application.
  */
@@ -136,7 +138,7 @@ public class ConsoleApp {
             System.out.print("Mot de passe? ");
             mdp = scanner.nextLine();
         }
-        ClientService clientService = new ClientService();
+        ClientService clientService = new ClientService(getConnection());
         try {
             clientService.inscrireClient(nom, prenom, adresse, email, numeroMobile, numeroCb, identifiant, mdp);
             System.out.println("Inscription réussie.");
@@ -162,7 +164,7 @@ public class ConsoleApp {
             System.out.print("Mot de passe? ");
             mdp = scanner.nextLine();
         }
-        ClientService clientService = new ClientService();
+        ClientService clientService = new ClientService(getConnection());
         try {
             ClientDTO clientDto = clientService.connecterClient(identifiant, mdp);
             Client client = new ClientMapper().toClient(clientDto);
