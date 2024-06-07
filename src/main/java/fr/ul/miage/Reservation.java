@@ -19,7 +19,12 @@ public class Reservation {
     private TypeReservation type;
     //TODO ajout Borne, Vehicule, Client (pas oublier le constructeur)
 
-    public Reservation(){}
+    /**
+     * Constructeur utilisé lors de la création d'une nouvelle reservation
+     * @param date
+     * @param heure_debut
+     * @param heure_fin
+     */
     public Reservation(LocalDate date, LocalTime heure_debut, LocalTime heure_fin){
         this.etat = EtatReservation.CREE;
         this.date = date;
@@ -29,12 +34,41 @@ public class Reservation {
         this.heure_depart = null;
         this.prolongee = 0;
     }
+
+    /**
+     * Constructeur par défaut de la classe Réservation
+     * @param date
+     * @param heure_debut
+     * @param heure_fin
+     * @param heure_arrivee
+     * @param heure_depart
+     * @param prolongee
+     */
+    public Reservation(int num_reservation, LocalDate date, LocalTime heure_debut, LocalTime heure_fin, LocalTime heure_arrivee, LocalTime heure_depart, int prolongee) {
+        this.num_reservation = num_reservation;
+        this.etat = EtatReservation.CREE;
+        this.date = date;
+        this.heure_debut = heure_debut;
+        this.heure_fin = heure_fin;
+        this.heure_arrivee = heure_arrivee;
+        this.heure_depart = heure_depart;
+        this.prolongee = prolongee;
+    }
+
+    /**
+     * Méthode qui pérmet de créer une nouvelle réservation
+     */
     public void creerReservation (){
         if (estReservationCoherente(this.date, this.heure_debut, this.heure_fin)){
             //TODO ajout nouvelle réservation dans bdd
         } else throw new IllegalStateException("Votre demande n'est pas cohérente.");
     }
 
+    /**
+     * Méthode qui permet de modifier une réservation existante
+     * @param heure_debut nouvelle heure de début de la réservation
+     * @param heure_fin nouvelle heure de fin de la réservation
+     */
     public void modifierReservation(LocalTime heure_debut, LocalTime heure_fin){
         if (this.etat.equals(EtatReservation.CONFIRMEE)){
             this.heure_debut = heure_debut;
@@ -44,6 +78,11 @@ public class Reservation {
         }
     }
     //TODO vérifier le booléen peutProlonger, je crois qu'il ne marche pas dans tous les cas
+
+    /**
+     * Méthode de vérification de la possibilité de prolongation d'une réservation
+     * @param duree la durée de la prolongation
+     */
     public void prolongerReservation(LocalTime duree){
         if(this.etat.equals(EtatReservation.EN_COURS)){
             boolean peutProlonger = (LocalTime.now().isBefore(this.heure_fin)) &&
@@ -61,6 +100,13 @@ public class Reservation {
         }else throw new IllegalStateException("La réservation doit être une réservation en cours.");
     }
 
+    /**
+     * Méthode de vérification que la saisie de la nouvelle réservation / modification d'une réservation est cohérente
+     * @param dateReservation
+     * @param debut
+     * @param fin
+     * @return
+     */
     public boolean estReservationCoherente (LocalDate dateReservation, LocalTime debut, LocalTime fin ){
 
         switch (dateReservation.compareTo(LocalDate.now())){
@@ -80,6 +126,15 @@ public class Reservation {
                 return false;
         }
     }
+
+    public int getNum_reservation() {
+        return num_reservation;
+    }
+
+    public void setNum_reservation(int num_reservation) {
+        this.num_reservation = num_reservation;
+    }
+
     public LocalDate getDate() {
         return date;
     }
