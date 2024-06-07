@@ -1,6 +1,8 @@
 package fr.ul.miage;
 
+import fr.ul.miage.dto.ClientDTO;
 import fr.ul.miage.entity.Client;
+import fr.ul.miage.mapper.ClientMapper;
 import fr.ul.miage.service.ClientService;
 
 import java.util.Scanner;
@@ -104,7 +106,9 @@ public class ConsoleApp {
         }
         ClientService clientService = new ClientService();
         try {
-            Client client = clientService.connecterClient(identifiant, mdp);
+            ClientMapper clientMapper = new ClientMapper();
+            ClientDTO clientDto = clientService.connecterClient(identifiant, mdp);
+            Client client = clientMapper.toClient(clientDto);
             System.out.println("Bienvenue " + client.getPrenom() + " " + client.getNom() + "!");
             return true;
         } catch (Exception e) {
