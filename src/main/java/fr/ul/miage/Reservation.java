@@ -14,18 +14,20 @@ public class Reservation {
     private static final int NB_MAX_PROLONGATION = 3;
     private LocalDate date;
     private LocalTime heure_debut, heure_fin, heure_arrivee, heure_depart;
-    private int prolongee, num_reservation;
+    private int prolongee, num_reservation, id_client, id_borne;
+    private String immatriculation_voiture;
     private EtatReservation etat;
     private TypeReservation type;
-    //TODO ajout Borne, Vehicule, Client (pas oublier le constructeur)
-
     /**
      * Constructeur utilisé lors de la création d'une nouvelle reservation
      * @param date
      * @param heure_debut
      * @param heure_fin
+     * @param id_client
+     * @param id_borne
+     * @param immatriculation_voiture
      */
-    public Reservation(LocalDate date, LocalTime heure_debut, LocalTime heure_fin){
+    public Reservation(LocalDate date, LocalTime heure_debut, LocalTime heure_fin, int id_client, int id_borne, String immatriculation_voiture){
         this.etat = EtatReservation.CREE;
         this.date = date;
         this.heure_debut = heure_debut;
@@ -33,6 +35,9 @@ public class Reservation {
         this.heure_arrivee = null;
         this.heure_depart = null;
         this.prolongee = 0;
+        this.id_client = id_client;
+        this.id_borne = id_borne;
+        this.immatriculation_voiture = immatriculation_voiture;
     }
 
     /**
@@ -43,8 +48,11 @@ public class Reservation {
      * @param heure_arrivee
      * @param heure_depart
      * @param prolongee
+     * @param id_client
+     * @param id_borne
+     * @param immatriculation_voiture
      */
-    public Reservation(int num_reservation, LocalDate date, LocalTime heure_debut, LocalTime heure_fin, LocalTime heure_arrivee, LocalTime heure_depart, int prolongee) {
+    public Reservation(int num_reservation, LocalDate date, LocalTime heure_debut, LocalTime heure_fin, LocalTime heure_arrivee, LocalTime heure_depart, int prolongee, int id_client, int id_borne, String immatriculation_voiture) {
         this.num_reservation = num_reservation;
         this.etat = EtatReservation.CREE;
         this.date = date;
@@ -53,6 +61,9 @@ public class Reservation {
         this.heure_arrivee = heure_arrivee;
         this.heure_depart = heure_depart;
         this.prolongee = prolongee;
+        this.id_client = id_client;
+        this.id_borne = id_borne;
+        this.immatriculation_voiture = immatriculation_voiture;
     }
 
     /**
@@ -85,11 +96,7 @@ public class Reservation {
      */
     public void prolongerReservation(LocalTime duree){
         if(this.etat.equals(EtatReservation.EN_COURS)){
-            boolean peutProlonger = (LocalTime.now().isBefore(this.heure_fin)) &&
-                    ((ChronoUnit.MINUTES.between(LocalTime.now(),this.heure_fin) <= 15) &&
-                            (ChronoUnit.MINUTES.between(LocalTime.now(),this.heure_fin) >= 0));
-            System.out.println(ChronoUnit.MINUTES.between(this.heure_fin, LocalTime.now()));
-            if (this.prolongee<NB_MAX_PROLONGATION && peutProlonger){
+            if (this.prolongee<NB_MAX_PROLONGATION && peutProlongerReservation()){
                 this.prolongee++;
                 this.heure_fin=this.heure_fin.plusHours(duree.getHour());
                 this.heure_fin=this.heure_fin.plusMinutes(duree.getMinute());
@@ -98,6 +105,17 @@ public class Reservation {
                 throw new IllegalStateException("La réservation ne peut être prolongée.");
             }
         }else throw new IllegalStateException("La réservation doit être une réservation en cours.");
+    }
+
+    /**
+     * Méthode qui détermine si une réservation peut être prolongée ou non.
+     * On peut prolonger une réservation si la demande est effectuée maximum 15 minutes avant la fin de la réservation
+     * @return vrai si la prolongation est possible, faux sinon
+     */
+    public boolean peutProlongerReservation (){
+        return ((LocalTime.now().isBefore(this.heure_fin)) &&
+                ((ChronoUnit.MINUTES.between(LocalTime.now(),this.heure_fin) <= 15) &&
+                        (ChronoUnit.MINUTES.between(LocalTime.now(),this.heure_fin) >= 0)));
     }
 
     /**
@@ -112,15 +130,12 @@ public class Reservation {
         switch (dateReservation.compareTo(LocalDate.now())){
             // après
             case 1:
-                System.out.println("après aujourd'hui");
                 return (debut.isBefore(fin));
             // avant
             case -1:
-                System.out.println("avant aujourd'hui");
                 return false;
             // aujourd'hui
             case 0:
-                System.out.println("aujourd'hui");
                 return (debut.isBefore(fin)&& debut.isAfter(LocalTime.now()));
             default:
                 return false;
@@ -193,5 +208,33 @@ public class Reservation {
 
     public void setType(TypeReservation type) {
         this.type = type;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public int getId_client() {
+        return id_client;
+    }
+
+    public void setId_client(int id_client) {
+        this.id_client = id_client;
+    }
+
+    public int getId_borne() {
+        return id_borne;
+    }
+
+    public void setId_borne(int id_borne) {
+        this.id_borne = id_borne;
+    }
+
+    public String getImmatriculation_voiture() {
+        return immatriculation_voiture;
+    }
+
+    public void setImmatriculation_voiture(String immatriculation_voiture) {
+        this.immatriculation_voiture = immatriculation_voiture;
     }
 }

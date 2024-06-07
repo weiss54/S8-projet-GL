@@ -8,7 +8,7 @@ public class ReservationMapper {
         if(reservation==null){
             return null;
         }
-        return new ReservationDTO(reservation.getNum_reservation(), reservation.getDate(), reservation.getHeure_debut(), reservation.getHeure_fin(), reservation.getHeure_arrivee(), reservation.getHeure_depart(), reservation.getProlongee());
+        return new ReservationDTO(reservation.getNum_reservation(), reservation.getDate(), reservation.getHeure_debut(), reservation.getHeure_fin(), reservation.getHeure_arrivee(), reservation.getHeure_depart(), reservation.getProlongee(), reservation.getId_client(), reservation.getId_borne(), reservation.getImmatriculation_voiture());
     }
 
 
@@ -16,6 +16,6 @@ public class ReservationMapper {
         if(reservation==null){
             return null;
         }
-        return new Reservation(reservation.getNum_reservation(), reservation.getDate(), reservation.getHeure_debut(), reservation.getHeure_fin(), reservation.getHeure_arrivee(), reservation.getHeure_depart(), reservation.getProlongee());
+        return new Reservation(reservation.getNum_reservation(), reservation.getDate(), reservation.getHeure_debut(), reservation.getHeure_fin(), reservation.getHeure_arrivee(), reservation.getHeure_depart(), reservation.getProlongee(), reservation.getId_client(), reservation.getId_borne(), reservation.getImmatriculation_voiture());
     }
 }

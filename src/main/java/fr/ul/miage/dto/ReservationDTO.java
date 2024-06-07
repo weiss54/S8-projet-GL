@@ -9,7 +9,8 @@ import java.time.LocalTime;
 public class ReservationDTO {
     private LocalDate date;
     private LocalTime heure_debut, heure_fin, heure_arrivee, heure_depart;
-    private int prolongee, num_reservation;
+    private int prolongee, num_reservation, id_client, id_borne;
+    private String immatriculation_voiture;
     private EtatReservation etat;
     private TypeReservation type;
 
@@ -21,8 +22,11 @@ public class ReservationDTO {
      * @param heure_arrivee
      * @param heure_depart
      * @param prolongee
+     * @param id_client
+     * @param id_borne
+     * @param immatriculation_voiture
      */
-    public ReservationDTO(int num_reservation, LocalDate date, LocalTime heure_debut, LocalTime heure_fin, LocalTime heure_arrivee, LocalTime heure_depart, int prolongee) {
+    public ReservationDTO(int num_reservation, LocalDate date, LocalTime heure_debut, LocalTime heure_fin, LocalTime heure_arrivee, LocalTime heure_depart, int prolongee, int id_client, int id_borne, String immatriculation_voiture) {
         this.num_reservation = num_reservation;
         this.etat = EtatReservation.CREE;
         this.date = date;
@@ -31,6 +35,9 @@ public class ReservationDTO {
         this.heure_arrivee = heure_arrivee;
         this.heure_depart = heure_depart;
         this.prolongee = prolongee;
+        this.id_client = id_client;
+        this.id_borne = id_borne;
+        this.immatriculation_voiture = immatriculation_voiture;
     }
 
     public LocalDate getDate() {
@@ -103,5 +110,29 @@ public class ReservationDTO {
 
     public void setType(TypeReservation type) {
         this.type = type;
+    }
+
+    public int getId_client() {
+        return id_client;
+    }
+
+    public void setId_client(int id_client) {
+        this.id_client = id_client;
+    }
+
+    public int getId_borne() {
+        return id_borne;
+    }
+
+    public void setId_borne(int id_borne) {
+        this.id_borne = id_borne;
+    }
+
+    public String getImmatriculation_voiture() {
+        return immatriculation_voiture;
+    }
+
+    public void setImmatriculation_voiture(String immatriculation_voiture) {
+        this.immatriculation_voiture = immatriculation_voiture;
     }
 }
