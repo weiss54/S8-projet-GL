@@ -13,6 +13,7 @@ public enum OptionCommandEnum {
 
     QUITTER_APPLICATION(0, "Quitter l'application","Ferme l'application et sauvegarde les données", false),
     CONNECTION_UTILISATEUR(1, "Se connecter", "Permet de s'identifier", false),
+    INSCRIPTION_UTILISATEUR(2, "S'inscrire", "Permet de créer un compte", false),
     AFFICHAGE_BORNES(21, "Afficher bornes", "Affiche la liste des bornes de recharge", true),
     AJOUTER_BORNE(22, "Ajouter une borne", "Ajoute une nouvelle borne de recharge", true),
     MODIFIER_BORNE(23, "Modifier une borne", "Modifie les informations d'une borne de recharge", true);

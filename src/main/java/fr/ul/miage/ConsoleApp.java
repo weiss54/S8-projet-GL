@@ -81,12 +81,70 @@ public class ConsoleApp {
                 return false;
             }
             case CONNECTION_UTILISATEUR -> connectUser();
+            case INSCRIPTION_UTILISATEUR -> inscrireUser();
             case AFFICHAGE_BORNES -> System.out.println(modele.getParc().afficherListeBornes());
             case AJOUTER_BORNE -> ajouterBorne();
             case MODIFIER_BORNE -> modifierBorne();
             case null, default -> System.out.println("Commande non reconnue.");
         }
         return true;
+    }
+
+
+    /**
+     * Inscrire un utilisateur.
+     * @return true si l'utilisateur est inscrit, sinon false
+     */
+    private boolean inscrireUser(){
+        String nom = null;
+        String prenom = null;
+        String adresse = null;
+        String email = null;
+        String numeroMobile = null;
+        String numeroCb = null;
+        String identifiant = null;
+        String mdp = null;
+        while (nom == null) {
+            System.out.print("Nom? ");
+            nom = scanner.nextLine();
+        }
+        while (prenom == null) {
+            System.out.print("Prénom? ");
+            prenom = scanner.nextLine();
+        }
+        while (adresse == null) {
+            System.out.print("Adresse? ");
+            adresse = scanner.nextLine();
+        }
+        while (email == null) {
+            System.out.print("Email? ");
+            email = scanner.nextLine();
+        }
+        while (numeroMobile == null) {
+            System.out.print("Numéro de mobile? ");
+            numeroMobile = scanner.nextLine();
+        }
+        while (numeroCb == null) {
+            System.out.print("Numéro de carte bancaire? ");
+            numeroCb = scanner.nextLine();
+        }
+        while (identifiant == null) {
+            System.out.print("Identifiant? ");
+            identifiant = scanner.nextLine();
+        }
+        while (mdp == null) {
+            System.out.print("Mot de passe? ");
+            mdp = scanner.nextLine();
+        }
+        ClientService clientService = new ClientService();
+        try {
+            clientService.inscrireClient(nom, prenom, adresse, email, numeroMobile, numeroCb, identifiant, mdp);
+            System.out.println("Inscription réussie.");
+            return true;
+        } catch (Exception e) {
+            System.out.println("Erreur lors de l'inscription: " + e.getMessage());
+            return false;
+        }
     }
 
     /**

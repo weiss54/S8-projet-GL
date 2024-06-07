@@ -2,7 +2,6 @@ package fr.ul.miage.service;
 
 import fr.ul.miage.dto.ClientDTO;
 import fr.ul.miage.exception.IdentifiantsIncorrectsException;
-import fr.ul.miage.entity.Client;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
