@@ -14,8 +14,8 @@ public class ClientService{
 
     private Connection connection;
 
-    public ClientService() {
-        this.connection = getConnection();
+    public ClientService(Connection connection) {
+        this.connection = connection;
     }
 
     public void inscrireClient(String identifiant, String mdp, String nom, String prenom, String adresse,
