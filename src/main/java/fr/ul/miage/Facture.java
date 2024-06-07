@@ -9,14 +9,14 @@ public class Facture {
     private float total;
     private Tarif tarif;
     private Date date;
-    //TODO ajouter la réservation quand la classe sera créée
+    private int id_tarif, id_reservation;
 
-    // private Reservation reservation;
-    public Facture(){}
-    public Facture(float total, Tarif tarif, Date date) {
+    public Facture(float total, Tarif tarif, Date date, int id_tarif, int id_reservation) {
         this.total = total;
         this.tarif = tarif;
         this.date = date;
+        this.id_tarif = id_tarif;
+        this.id_reservation = id_reservation;
     }
     public double calculTarifClient(int duree_reservation, int duree_prolongation, int duree_depassement,
                                     int duree_electricite, int duree_remboursement){
