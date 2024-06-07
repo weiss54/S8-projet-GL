@@ -114,10 +114,6 @@ public class ConsoleApp {
             System.out.println("Erreur lors de la connexion: " + e.getMessage());
             return false;
         }
-        //TODO on vérifie que l'utilisateur se connecte
-        // S'il se connecte, on va ajouter dans le chemin utilisateur qu'il s'est connecté et enregistrer le compte user
-        // Sinon, on affiche le menu de connexion
-        //throw new UnsupportedOperationException("Not implemented yet");
     }
 
     private int selectionBorne() {
