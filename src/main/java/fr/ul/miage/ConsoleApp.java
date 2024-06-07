@@ -1,6 +1,13 @@
 package fr.ul.miage;
 
+import fr.ul.miage.dto.ClientDTO;
+import fr.ul.miage.entity.Client;
+import fr.ul.miage.mapper.ClientMapper;
+import fr.ul.miage.service.ClientService;
+
 import java.util.Scanner;
+
+import static fr.ul.miage.DatabaseConnection.getConnection;
 
 /**
  * Classe qui affiche un menu console pour l'application.
@@ -76,12 +83,70 @@ public class ConsoleApp {
                 return false;
             }
             case CONNECTION_UTILISATEUR -> connectUser();
+            case INSCRIPTION_UTILISATEUR -> inscrireUser();
             case AFFICHAGE_BORNES -> System.out.println(modele.getParc().afficherListeBornes());
             case AJOUTER_BORNE -> ajouterBorne();
             case MODIFIER_BORNE -> modifierBorne();
             case null, default -> System.out.println("Commande non reconnue.");
         }
         return true;
+    }
+
+
+    /**
+     * Inscrire un utilisateur.
+     * @return true si l'utilisateur est inscrit, sinon false
+     */
+    private boolean inscrireUser(){
+        String nom = null;
+        String prenom = null;
+        String adresse = null;
+        String email = null;
+        String numeroMobile = null;
+        String numeroCb = null;
+        String identifiant = null;
+        String mdp = null;
+        while (nom == null) {
+            System.out.print("Nom? ");
+            nom = scanner.nextLine();
+        }
+        while (prenom == null) {
+            System.out.print("Prénom? ");
+            prenom = scanner.nextLine();
+        }
+        while (adresse == null) {
+            System.out.print("Adresse? ");
+            adresse = scanner.nextLine();
+        }
+        while (email == null) {
+            System.out.print("Email? ");
+            email = scanner.nextLine();
+        }
+        while (numeroMobile == null) {
+            System.out.print("Numéro de mobile? ");
+            numeroMobile = scanner.nextLine();
+        }
+        while (numeroCb == null) {
+            System.out.print("Numéro de carte bancaire? ");
+            numeroCb = scanner.nextLine();
+        }
+        while (identifiant == null) {
+            System.out.print("Identifiant? ");
+            identifiant = scanner.nextLine();
+        }
+        while (mdp == null) {
+            System.out.print("Mot de passe? ");
+            mdp = scanner.nextLine();
+        }
+        ClientService clientService = new ClientService(getConnection());
+        try {
+            clientService.inscrireClient(nom, prenom, adresse, email, numeroMobile, numeroCb, identifiant, mdp);
+            System.out.println("Inscription réussie.");
+            return true;
+        } catch (Exception e) {
+            System.out.println("Erreur lors de l'inscription: " + e.getMessage());
+            return false;
+        }
     }
 
     /**
@@ -99,10 +164,16 @@ public class ConsoleApp {
             System.out.print("Mot de passe? ");
             mdp = scanner.nextLine();
         }
-        //TODO on vérifie que l'utilisateur se connecte
-        // S'il se connecte, on va ajouter dans le chemin utilisateur qu'il s'est connecté et enregistrer le compte user
-        // Sinon, on affiche le menu de connexion
-        throw new UnsupportedOperationException("Not implemented yet");
+        ClientService clientService = new ClientService(getConnection());
+        try {
+            ClientDTO clientDto = clientService.connecterClient(identifiant, mdp);
+            Client client = new ClientMapper().toClient(clientDto);
+            System.out.println("Bienvenue " + client.getPrenom() + " " + client.getNom() + "!");
+            return true;
+        } catch (Exception e) {
+            System.out.println("Erreur lors de la connexion: " + e.getMessage());
+            return false;
+        }
     }
 
     private int selectionBorne() {
