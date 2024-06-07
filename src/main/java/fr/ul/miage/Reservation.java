@@ -1,5 +1,10 @@
 package fr.ul.miage;
 
+import fr.ul.miage.dto.ReservationDTO;
+import fr.ul.miage.mapper.ReservationMapper;
+import fr.ul.miage.service.ReservationService;
+
+import java.sql.SQLException;
 import java.sql.Time;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
@@ -11,6 +16,7 @@ import java.util.Date;
  * Classe qui représente une reservation de borne de recharge
  */
 public class Reservation {
+    private final ReservationService reservationService = new ReservationService();
     private static final int NB_MAX_PROLONGATION = 3;
     private LocalDate date;
     private LocalTime heure_debut, heure_fin, heure_arrivee, heure_depart;
@@ -18,27 +24,11 @@ public class Reservation {
     private String immatriculation_voiture;
     private EtatReservation etat;
     private TypeReservation type;
+
     /**
-     * Constructeur utilisé lors de la création d'une nouvelle reservation
-     * @param date
-     * @param heure_debut
-     * @param heure_fin
-     * @param id_client
-     * @param id_borne
-     * @param immatriculation_voiture
+     * Constructeur
      */
-    public Reservation(LocalDate date, LocalTime heure_debut, LocalTime heure_fin, int id_client, int id_borne, String immatriculation_voiture){
-        this.etat = EtatReservation.CREE;
-        this.date = date;
-        this.heure_debut = heure_debut;
-        this.heure_fin = heure_fin;
-        this.heure_arrivee = null;
-        this.heure_depart = null;
-        this.prolongee = 0;
-        this.id_client = id_client;
-        this.id_borne = id_borne;
-        this.immatriculation_voiture = immatriculation_voiture;
-    }
+    public Reservation(){}
 
     /**
      * Constructeur par défaut de la classe Réservation
@@ -70,16 +60,54 @@ public class Reservation {
         this.type = type;
     }
 
+    public String afficherReservation(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("Réservation ").append(this.num_reservation).append("\n")
+                .append("Date : ").append(this.date).append("\n")
+                .append("Heure de début : ").append(this.heure_debut).append("\n")
+                .append("Heure de fin : ").append(this.heure_fin).append("\n")
+                .append("Heure d'arrivée : ").append((this.heure_arrivee != null) ? this.heure_arrivee : "Non spécifiée").append("\n")
+                .append("Heure de départ : ").append((this.heure_depart != null) ? this.heure_depart : "Non spécifiée").append("\n")
+                .append("Prolongée : ").append(this.prolongee).append(" fois\n")
+                .append("État : ").append(this.etat).append("\n")
+                .append("Type : ").append(this.type).append("\n")
+                .append("ID Client : ").append(this.id_client).append("\n")
+                .append("ID Borne : ").append(this.id_borne).append("\n")
+                .append("Immatriculation de la voiture : ").append(this.immatriculation_voiture).append("\n");
+        return sb.toString();
+    }
 
     /**
      * Méthode qui pérmet de créer une nouvelle réservation
      */
     public void creerReservation (){
         if (estReservationCoherente(this.date, this.heure_debut, this.heure_fin)){
+            try {
+                this.etat = EtatReservation.CONFIRMEE;
+                reservationService.createReservation(ReservationMapper.toDTO(this));
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            this.etat = EtatReservation.CREE;
+            throw new IllegalStateException("Votre demande n'est pas cohérente.");
+        }
 
-            //TODO ajout nouvelle réservation dans bdd
-        } else throw new IllegalStateException("Votre demande n'est pas cohérente.");
     }
+
+    /**
+     * Méthode qui pérmet de récupérer une réservation
+     */
+    public Reservation getReservation (){
+        if (!String.valueOf(this.id_client).isBlank()){
+            try {
+                return ReservationMapper.toEntity(reservationService.getReservationById(ReservationMapper.toDTO(this).getNum_reservation()));
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        } else throw new IllegalStateException("L'identifiant du client n'est pas au bon format.");
+    }
+
 
     /**
      * Méthode qui permet de modifier une réservation existante
@@ -132,20 +160,37 @@ public class Reservation {
      * @return
      */
     public boolean estReservationCoherente (LocalDate dateReservation, LocalTime debut, LocalTime fin ){
-
-        switch (dateReservation.compareTo(LocalDate.now())){
+        System.out.println(dateReservation);
+        System.out.println(LocalDate.now());
+        System.out.println(dateReservation.compareTo(LocalDate.now()));
+        int temps = dateReservation.compareTo(LocalDate.now());
+        if (temps>0){
+            System.out.println("après");
+            return (debut.isBefore(fin));
+        }else if (temps<0){
+            System.out.println("avant");
+            return false;
+        } else if (temps==0) {
+            System.out.println("aujourd'hui");
+            return (debut.isBefore(fin)&& debut.isAfter(LocalTime.now()));
+        } else return false;
+        /*
+        switch (){
             // après
-            case 1:
+            case (temps>0):
+                System.out.println("après");
                 return (debut.isBefore(fin));
             // avant
-            case -1:
+            case (temps<-1):
+                System.out.println("avant");
                 return false;
             // aujourd'hui
-            case 0:
+            case (temps==0):
+                System.out.println("aujourd'hui");
                 return (debut.isBefore(fin)&& debut.isAfter(LocalTime.now()));
             default:
                 return false;
-        }
+        } */
     }
 
     public int getNum_reservation() {
