@@ -106,9 +106,8 @@ public class ConsoleApp {
         }
         ClientService clientService = new ClientService();
         try {
-            ClientMapper clientMapper = new ClientMapper();
             ClientDTO clientDto = clientService.connecterClient(identifiant, mdp);
-            Client client = clientMapper.toClient(clientDto);
+            Client client = new ClientMapper().toClient(clientDto);
             System.out.println("Bienvenue " + client.getPrenom() + " " + client.getNom() + "!");
             return true;
         } catch (Exception e) {
