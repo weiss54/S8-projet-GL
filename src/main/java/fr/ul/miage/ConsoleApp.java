@@ -18,6 +18,11 @@ public class ConsoleApp {
     private final Scanner scanner = new Scanner(System.in);
 
     /**
+     * Modèle de l'application.
+     */
+    private final Modele modele = new Modele();
+
+    /**
      * Exécute l'application.
      * @throws Exception
      */
@@ -51,12 +56,11 @@ public class ConsoleApp {
     private String displayHome() {
         StringBuilder sb = new StringBuilder();
         sb.append("\n");
-        sb.append("PPPP   EEEE  RRRR  RRRR  I  N    N\n");
-        sb.append("P  P   E     R  R  R  R  I  NN   N\n");
-        sb.append("PPPP   E     RRRR  RRRR  I  N N  N\n");
-        sb.append("P      EEEE  R R   R R   I  N  N N\n");
-        sb.append("P      E     R  R  R  R  I  N   NN\n");
-        sb.append("P      EEEE  R  R  R  R  I  N    N\n\n");
+        sb.append("PPPP   EEEE  RRRR  RRRR  I  N   N\n");
+        sb.append("P  P   E     R  R  R  R  I  NN  N\n");
+        sb.append("PPPP   E     RRRR  RRRR  I  N N N\n");
+        sb.append("P      EEEE  R R   R R   I  N  NN\n");
+        sb.append("P      EEEE  R  R  R  R  I  N   N\n\n");
         sb.append("Welcome. Here is the list of available commands:\n");
         return sb.toString();
     }
@@ -68,15 +72,14 @@ public class ConsoleApp {
      */
     private boolean processCommand(int command) {
         switch (OptionCommandEnum.searchCommand(command)) {
-            case QUIT_APPLICATION -> {
+            case QUITTER_APPLICATION -> {
                 return false;
             }
-            case CONNECT_USER -> {
-                connectUser();
-            }
-            case null, default -> {
-                System.out.println("Commande non reconnue. Tapez 'help' pour la liste des commandes disponibles.");
-            }
+            case CONNECTION_UTILISATEUR -> connectUser();
+            case AFFICHAGE_BORNES -> System.out.println(modele.getParc().afficherListeBornes());
+            case AJOUTER_BORNE -> ajouterBorne();
+            case MODIFIER_BORNE -> modifierBorne();
+            case null, default -> System.out.println("Commande non reconnue.");
         }
         return true;
     }
@@ -101,6 +104,57 @@ public class ConsoleApp {
         // Sinon, on affiche le menu de connexion
         throw new UnsupportedOperationException("Not implemented yet");
     }
+
+    private int selectionBorne() {
+        int numero = -1;
+        boolean res;
+        System.out.print("Numéro de borne? ");
+        if (scanner.hasNextInt()) {
+            numero = scanner.nextInt();
+        } else {
+            System.out.println("Numéro de borne invalide.");
+            scanner.nextLine();
+        }
+        if (numero < 0) {
+            System.out.println("Numéro de borne invalide: il doit être positif.");
+        }
+        return numero;
+    }
+
+    private void ajouterBorne() {
+        int numBorne = selectionBorne();
+        if (numBorne != -1) {
+            boolean res = modele.getParc().ajouterBorne(new Borne(numBorne, EtatBorne.DISPONIBLE));
+            if (res) {
+                System.out.println("Borne ajoutée avec succès.");
+            } else {
+                System.out.println("Impossible d'ajouter la borne: le numéro existe déjà.");
+            }
+        }
+    }
+
+    private void modifierBorne() {
+        int numBorne = selectionBorne();
+        Borne borne = modele.getParc().getBorne(numBorne);
+        if (numBorne == -1 || borne == null) {
+            System.out.println(numBorne == -1 ? "Aucune borne sélectionnée." : "Borne inexistante.");
+            return;
+        }
+        if (borne.getEtat() != EtatBorne.INDISPONIBLE && borne.getEtat() != EtatBorne.DISPONIBLE) {
+            System.out.println("Impossible de modifier cette borne. Elle est actuellement en état: " + borne.getEtat());
+            return;
+        }
+        System.out.println(borne);
+        System.out.println("Nouvel état de la borne?");
+        System.out.println("1. DISPONIBLE");
+        System.out.println("2. INDISPONIBLE");
+        System.out.println("Votre choix: ");
+        if (scanner.hasNextInt()) {
+            int choix = scanner.nextInt();
+            modele.getParc().modifierBorne(numBorne, choix);
+        }
+    }
+
 
     /**
      * Point d'entrée de l'application.
